@@ -1,7 +1,115 @@
 ﻿@page "/"
 
-<PageTitle>Home</PageTitle>
+<header class="mb-5">
+    <div id="carouselHome" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#carouselHome" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+            <button type="button" data-bs-target="#carouselHome" data-bs-slide-to="1" aria-label="Slide 2"></button>
+            <button type="button" data-bs-target="#carouselHome" data-bs-slide-to="2" aria-label="Slide 3"></button>
+        </div>
 
-<h1>Hello, world!</h1>
+        <div class="carousel-inner">
+            <div class="carousel-item active" data-bs-interval="5000">
+				<img src="/img/banner-linconclass-1.png" class="d-block w-100" alt="Música para Casamentos">
+                <div class="carousel-caption d-none d-md-block">
+                    <h1>Seu Evento, Minha Música</h1>
+                    <p>A trilha sonora perfeita para momentos inesquecíveis.</p>
+                </div>
+            </div>
+            <div class="carousel-item" data-bs-interval="5000">
+                <img src="/img/banner-linconclass-1.png" class="d-block w-100" alt="Saxofone em Cerimoniais">
+                <div class="carousel-caption d-none d-md-block">
+                    <h2>Elegância e Sofisticação</h2>
+                    <p>O som do saxofone que transforma qualquer cerimônia.</p>
+                </div>
+            </div>
+            <div class="carousel-item" data-bs-interval="5000">
+                <img src="/img/banner-linconclass-1.png" class="d-block w-100" alt="Música para Inaugurações e Eventos">
+                <div class="carousel-caption d-none d-md-block">
+                    <h2>Destaque Seu Negócio</h2>
+                    <p>Música ao vivo para a inauguração da sua loja.</p>
+                </div>
+            </div>
+        </div>
 
-Welcome to your new app.
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselHome" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Anterior</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselHome" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Próximo</span>
+        </button>
+    </div>
+</header>
+
+<section class="container my-5 text-center">
+    <h2 class="display-5 fw-bold mb-4">Serviços Musicais</h2>
+
+    <div class="row g-4">
+        <div class="col-lg-4 col-md-6">
+            <div class="card shadow-sm h-100">
+				<img src=" /img/saxofone-evento-victorecarol-2.jpg" class="card-img-top" alt="Recepção de Casamento">
+                <div class="card-body">
+                    <h5 class="card-title text-primary">Recepções de Casamento</h5>
+                    <p class="card-text">Música instrumental elegante para a recepção dos seus convidados. Clássico ou Pop/Jazz. Deixe o saxofone criar a atmosfera perfeita.</p>
+                    <a href="/servicos/casamento" class="btn btn-outline-primary mt-2">Saiba Mais</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-md-6">
+            <div class="card shadow-sm h-100">
+				<img src="/img/saxofone-evento-ane-1.jpg" class="card-img-top" alt="Cerimoniais">
+                <div class="card-body">
+                    <h5 class="card-title text-primary">Cerimônia Religiosa ou Civil</h5>
+                    <p class="card-text">A trilha sonora da sua entrada e dos momentos chave. Personalize cada canção para tornar a sua cerimônia única e emocionante.</p>
+                    <a href="/servicos/cerimonial" class="btn btn-outline-primary mt-2">Saiba Mais</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4 col-md-12">
+            <div class="card shadow-sm h-100">
+                <img src="/img/saxofone-evento-victorecarol-2.jpg" class="card-img-top" alt="Inauguração de Lojas">
+                <div class="card-body">
+                    <h5 class="card-title text-primary">Inaugurações e Eventos Corporativos</h5>
+                    <p class="card-text">Atraia clientes e crie um ambiente sofisticado para o lançamento da sua marca ou evento corporativo com música ao vivo.</p>
+                    <a href="/servicos/inauguracao" class="btn btn-outline-primary mt-2">Saiba Mais</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="container my-5 py-4 bg-light">
+    <h2 class="text-center mb-4">Momentos Capturados</h2>
+    <p class="text-center mb-5">Uma prévia de alguns dos eventos que já tive o prazer de sonorizar.</p>
+
+    <div class="row g-2 justify-content-center">
+        @for (int i = 1; i <= 10; i++)
+        {
+            <div class="col-lg-2 col-md-3 col-6">
+                <img src="@($"https://via.placeholder.com/200?text=Foto+{i}")"
+                     class="img-fluid rounded shadow-sm"
+                     alt="@($"Evento {i} Lincon Class")"
+                     style="object-fit: cover; height: 100%; width: 100%; aspect-ratio: 1/1;" />
+            </div>
+        }
+    </div>
+
+    <div class="text-center mt-5">
+        <a href="/galeria-completa" class="btn btn-primary btn-lg">Ver a Galeria Completa</a>
+    </div>
+</section>
+
+<footer class="bg-dark text-white text-center py-4 mt-5">
+    <div class="container">
+        <p class="mb-1">&copy; @DateTime.Now.Year | **Lincon Class** - Saxofonista</p>
+        <p class="mb-0">
+            <a href="https://www.instagram.com/linconclass" target="_blank" class="text-info text-decoration-none me-3">@@linconclass</a>
+            <span class="mx-2">|</span>
+            <a href="https://www.linconclass.com.br" target="_blank" class="text-info text-decoration-none">linconclass.com.br</a>
+        </p>
+    </div>
+</footer>
