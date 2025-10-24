@@ -1,0 +1,32 @@
+name: Deploy Blazor to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main # Aciona o workflow ao fazer push no branch principal
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '10.0.x' # Use a versão correta do .NET
+
+    # Compila e publica o projeto Blazor WASM
+    - name: Restore and Publish
+      run: dotnet publish linconclass/linconclass.csproj -c Release --nologo
+
+    # Deploy usando o artefato compilado
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        # Caminho corrigido para sua estrutura: (PastaProjeto/bin/Release/netX.0/publish/wwwroot)
+        publish_dir: linconclass/bin/Release/net10.0/publish/wwwroot 
+        publish_branch: gh-pages # Branch que o GitHub Pages vai usar
