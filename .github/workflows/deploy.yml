@@ -1,32 +1,60 @@
-name: Deploy Blazor to GitHub Pages
+# Nome do Workflow: Compilar e Publicar Blazor WASM
+name: Deploy Blazor WASM to GitHub Pages
 
 on:
+  # Aciona no push para o branch principal
   push:
-    branches:
-      - main # Aciona o workflow ao fazer push no branch principal
+    branches: ["master"] # Mude para 'main' se o seu branch principal for 'main'
+
+  # Permite rodar manualmente pela aba Actions
+  workflow_dispatch:
+
+# Define permissões para o GitHub Actions poder fazer o deploy
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Permite apenas um deploy concorrente
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
 
 jobs:
-  build-and-deploy:
+  # Job único de build e deploy
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout Code
-      uses: actions/checkout@v3
+      - name: Checkout (Pegar o código)
+        uses: actions/checkout@v4
 
-    - name: Setup .NET Core
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: '10.0.x' # Use a versão correta do .NET
+      # ETAPA 1: INSTALAR O .NET
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v3
+        with:
+          # Sua versão do projeto .NET 10.0
+          dotnet-version: '10.0.x' 
 
-    # Compila e publica o projeto Blazor WASM
-    - name: Restore and Publish
-      run: dotnet publish linconclass/linconclass.csproj -c Release --nologo
+      # ETAPA 2: COMPILAR O BLAZOR
+      - name: Restore and Publish Blazor WASM
+        # Compila o projeto 'linconclass' e coloca o resultado na pasta 'deploy_output'
+        run: dotnet publish linconclass/linconclass.csproj -c Release -o deploy_output
 
-    # Deploy usando o artefato compilado
-    - name: Deploy to GitHub Pages
-      uses: peaceiris/actions-gh-pages@v3
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        # Caminho corrigido para sua estrutura: (PastaProjeto/bin/Release/netX.0/publish/wwwroot)
-        publish_dir: linconclass/bin/Release/net10.0/publish/wwwroot 
-        publish_branch: gh-pages # Branch que o GitHub Pages vai usar
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+
+      # ETAPA 3: FAZER UPLOAD DO RESULTADO COMPILADO
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          # O 'path' DEVE ser a pasta de saída do Blazor (wwwroot)
+          # Onde o 'dotnet publish' colocou os arquivos
+          path: 'deploy_output/wwwroot'
+
+      # ETAPA 4: FAZER O DEPLOY
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
