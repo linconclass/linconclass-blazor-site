@@ -1,0 +1,73 @@
+﻿@page "/galeria"
+
+<PageTitle>Galeria de Fotos - Lincon Class Saxofonista</PageTitle>
+
+<header class="text-center my-5">
+    <h1 class="display-4 fw-bold text-primary">Álbum de Fotos | Lincon Class</h1>
+    <p class="lead">Música e Saxofone nos momentos mais especiais: Casamentos, Cerimoniais e Eventos.</p>
+</header>
+
+<div class="container my-5">
+    <div class="row g-4">
+
+        @foreach (var foto in Fotos)
+        {
+            <div class="col-lg-3 col-md-4 col-6">
+                <div class="card shadow-sm border-0 h-100">
+
+                    <img src="@foto.UrlImagem"
+                         class="card-img-top"
+                         alt="@foto.Legenda"
+                         style="object-fit: cover; height: 250px;" />
+
+                    <div class="card-body p-2 bg-light">
+                        <p class="card-text text-muted mb-0 small">@foto.Legenda</p>
+                    </div>
+                </div>
+            </div>
+        }
+
+    </div>
+</div>
+
+
+@code {
+    // ----------------------------------------------------
+    // 1. Definição da Estrutura (Modelo) para uma Foto
+    // ----------------------------------------------------
+    public class Foto
+    {
+        public int Id { get; set; }
+        public string UrlImagem { get; set; } = string.Empty;
+        public string Legenda { get; set; } = string.Empty;
+        public string Categoria { get; set; } = string.Empty; // Ex: Casamento, Inauguração, Ensaio
+    }
+
+    // ----------------------------------------------------
+    // 2. Lista de Fotos (Seus dados)
+    // ----------------------------------------------------
+    private List<Foto> Fotos = new List<Foto>();
+
+    // Método de inicialização do componente Blazor
+    protected override void OnInitialized()
+    {
+        // Aqui você preenche a sua lista de fotos.
+        // DICA: Use os caminhos locais (ex: "/images/galeria/foto1.jpg")
+        Fotos = new List<Foto>
+        {
+            new Foto { Id = 1, UrlImagem = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSCqcP_tPHU90tk6Jwr42VM3YF1_UnGcUpHqg&s", Legenda = "Saxofone na Cerimônia", Categoria = "Casamento" },
+            new Foto { Id = 2, UrlImagem = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSCqcP_tPHU90tk6Jwr42VM3YF1_UnGcUpHqg&s", Legenda = "Inauguração de Loja de Grife", Categoria = "Corporativo" },
+            new Foto { Id = 3, UrlImagem = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSCqcP_tPHU90tk6Jwr42VM3YF1_UnGcUpHqg&s", Legenda = "Música na Recepção do Salão", Categoria = "Casamento" },
+            new Foto { Id = 4, UrlImagem = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSCqcP_tPHU90tk6Jwr42VM3YF1_UnGcUpHqg&s", Legenda = "Jantar de Gala Empresarial", Categoria = "Corporativo" },
+            new Foto { Id = 5, UrlImagem = "https://www.google.com/url?sa=i&url=https%3A%2F%2Flushorquestra.com.br%2Fsax-walking-para-recepcao%2F&psig=AOvVaw1ZawiIdjEAZpGgzBS_o0_T&ust=1761437495158000&source=images&cd=vfe&opi=89978449&ved=0CBUQjRxqFwoTCLDI3JaIvpADFQAAAAAdAAAAABAE", Legenda = "Melodia na Troca de Alianças", Categoria = "Casamento" },
+            new Foto { Id = 6, UrlImagem = "https://via.placeholder.com/400?text=Show+Particular", Legenda = "Show particular em residência", Categoria = "Particular" },
+            new Foto { Id = 7, UrlImagem = "https://via.placeholder.com/400?text=Casamento+3", Legenda = "Momento dos votos", Categoria = "Casamento" },
+            new Foto { Id = 8, UrlImagem = "https://via.placeholder.com/400?text=Inauguracao+2", Legenda = "Boas-vindas aos clientes", Categoria = "Corporativo" },
+            new Foto { Id = 9, UrlImagem = "https://via.placeholder.com/400?text=Evento+Exterior", Legenda = "Evento ao ar livre", Categoria = "Particular" },
+            new Foto { Id = 10, UrlImagem = "https://via.placeholder.com/400?text=Recepcao+2", Legenda = "Happy Hour com Jazz", Categoria = "Corporativo" },
+            new Foto { Id = 11, UrlImagem = "https://via.placeholder.com/400?text=Casamento+4", Legenda = "Foto clássica com o instrumento", Categoria = "Casamento" },
+            new Foto { Id = 12, UrlImagem = "https://via.placeholder.com/400?text=Show+Noturno", Legenda = "Performance noturna", Categoria = "Particular" },
+            // ... adicione quantas fotos quiser!
+        };
+    }
+}
