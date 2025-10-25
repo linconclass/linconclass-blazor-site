@@ -1,10 +1,10 @@
+# Nome do Workflow: Compilar e Publicar Blazor WASM
 name: Deploy Blazor WASM to GitHub Pages
 
 on:
   # Aciona no push para o branch principal
   push:
-    branches:
-      - master # Mude para 'main' se o seu branch principal for 'main'
+    branches: ["master"] # Mude para 'main' se o seu branch principal for 'main'
 
   # Permite rodar manualmente pela aba Actions
   workflow_dispatch:
@@ -15,35 +15,46 @@ permissions:
   pages: write
   id-token: write
 
+# Permite apenas um deploy concorrente
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
 jobs:
-  build-and-deploy:
-    runs-on: ubuntu-latest
+  # Job único de build e deploy
+  deploy:
     environment:
       name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }} # Define a URL de ambiente
-
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
     steps:
-    - name: Checkout Code
-      uses: actions/checkout@v3
+      - name: Checkout (Pegar o código)
+        uses: actions/checkout@v4
 
-    - name: Setup .NET Core
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: '10.0.x' # Baseado na sua escolha de .NET 10.0 (Versão Prévia)
+      # ETAPA 1: INSTALAR O .NET
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v3
+        with:
+          # Sua versão do projeto .NET 10.0
+          dotnet-version: '10.0.x' 
 
-    # Compila e publica o Blazor WASM
-    - name: Restore and Publish
-      # Publica o projeto na pasta 'build_output/wwwroot'
-      run: dotnet publish linconclass/linconclass.csproj -c Release -o build_output 
+      # ETAPA 2: COMPILAR O BLAZOR
+      - name: Restore and Publish Blazor WASM
+        # Compila o projeto 'linconclass' e coloca o resultado na pasta 'deploy_output'
+        run: dotnet publish linconclass/linconclass.csproj -c Release -o deploy_output
 
-    # Esta é a nova forma: envia os arquivos como um "Artefato"
-    - name: Upload artifact
-      uses: actions/upload-pages-artifact@v3
-      with:
-        # Caminho para os arquivos estáticos compilados (ajustado pelo comando acima)
-        path: build_output/wwwroot
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
 
-    # Esta é a nova forma: faz o deploy do artefato
-    - name: Deploy to GitHub Pages
-      id: deployment
-      uses: actions/deploy-pages@v4
+      # ETAPA 3: FAZER UPLOAD DO RESULTADO COMPILADO
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          # O 'path' DEVE ser a pasta de saída do Blazor (wwwroot)
+          # Onde o 'dotnet publish' colocou os arquivos
+          path: 'deploy_output/wwwroot'
+
+      # ETAPA 4: FAZER O DEPLOY
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
