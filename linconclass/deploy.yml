@@ -1,0 +1,49 @@
+name: Deploy Blazor WASM to GitHub Pages
+
+on:
+  # Aciona no push para o branch principal
+  push:
+    branches:
+      - master # Mude para 'main' se o seu branch principal for 'main'
+
+  # Permite rodar manualmente pela aba Actions
+  workflow_dispatch:
+
+# Define permissões para o GitHub Actions poder fazer o deploy
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }} # Define a URL de ambiente
+
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v3
+
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '10.0.x' # Baseado na sua escolha de .NET 10.0 (Versão Prévia)
+
+    # Compila e publica o Blazor WASM
+    - name: Restore and Publish
+      # Publica o projeto na pasta 'build_output/wwwroot'
+      run: dotnet publish linconclass/linconclass.csproj -c Release -o build_output 
+
+    # Esta é a nova forma: envia os arquivos como um "Artefato"
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@v3
+      with:
+        # Caminho para os arquivos estáticos compilados (ajustado pelo comando acima)
+        path: build_output/wwwroot
+
+    # Esta é a nova forma: faz o deploy do artefato
+    - name: Deploy to GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v4
