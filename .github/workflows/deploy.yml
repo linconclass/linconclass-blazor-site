@@ -1,51 +1,33 @@
-name: Deploy Blazor WASM to GitHub Pages
+name: Deploy Blazor WebAssembly to GitHub Pages
 
 on:
   push:
-    branches: ["master"] # Seu branch principal
-  workflow_dispatch:
+    branches: ["master"]  # ou "main", se for o caso
 
-# Define permissões para o deploy
 permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-concurrency:
-  group: "pages"
-  cancel-in-progress: false
+  contents: write
 
 jobs:
-  deploy:
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
+  build:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout (Pegar o código)
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup .NET Core
-        uses: actions/setup-dotnet@v3
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
         with:
-          # Sua versão .NET 10.0 (Prévia)
-          dotnet-version: '10.0.x' 
+          dotnet-version: 8.0.x
 
-      - name: Restore and Publish Blazor WASM
-        # Compila o projeto na pasta 'linconclass'
-        # e joga a saída para a pasta 'dist'
-        run: dotnet publish linconclass/linconclass.csproj -c Release -o dist
+      - name: Publish Blazor WebAssembly app
+        run: dotnet publish -c Release -o release
 
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          # O caminho final dos arquivos estáticos é: pasta de saída / wwwroot
-          # Onde o 'index.html' está
-          path: 'dist/wwwroot'
+      - name: Fix base href for GitHub Pages
+        run: |
+          sed -i 's|<base href="/"|<base href="/linconclass-blazor-site/"|' release/wwwroot/index.html
 
       - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./release/wwwroot
